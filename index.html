@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理大師桌遊組2.0</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: #00008B; /* 深藍色 */
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .button-group {
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: bold; /* 字體改為粗體 */
+        }
+        button.agree {
+            background-color: #FFD700; /* 明黃色 */
+        }
+        button.disagree {
+            background-color: #87CEEB; /* 水藍色 */
+        }
+        button.reset {
+            background-color: #D3D3D3; /* 淺灰色 */
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+        .group-section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .score-message {
+            color: red;
+            font-weight: bold;
+            font-size: 16px; /* 字體大小與 option 相同 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>管理大師桌遊組2.0</h1>
+        
+        <div>
+            <label for="groupSelect">選擇組別:</label>
+            <select id="groupSelect" onchange="updateGroup()">
+                <option value="1">第1組</option>
+                <option value="2">第2組</option>
+                <option value="3">第3組</option>
+                <option value="4">第4組</option>
+                <option value="5">第5組</option>
+                <option value="6">第6組</option>
+            </select>
+        </div>
+
+        <div id="group1" class="group-section">
+            <h2>第1組</h2>
+            <button class="agree" onclick="vote('1', 'agree')">贊同</button>
+            <button class="disagree" onclick="vote('1', 'disagree')">不贊同</button>
+            <button class="reset" onclick="resetVotes('1')">重新投票</button>
+        </div>
+
+        <div id="group2" class="group-section">
+            <h2>第2組</h2>
+            <button class="agree" onclick="vote('2', 'agree')">贊同</button>
+            <button class="disagree" onclick="vote('2', 'disagree')">不贊同</button>
+            <button class="reset" onclick="resetVotes('2')">重新投票</button>
+        </div>
+
+        <div id="group3" class="group-section">
+            <h2>第3組</h2>
+            <button class="agree" onclick="vote('3', 'agree')">贊同</button>
+            <button class="disagree" onclick="vote('3', 'disagree')">不贊同</button>
+            <button class="reset" onclick="resetVotes('3')">重新投票</button>
+        </div>
+
+        <div id="group4" class="group-section">
+            <h2>第4組</h2>
+            <button class="agree" onclick="vote('4', 'agree')">贊同</button>
+            <button class="disagree" onclick="vote('4', 'disagree')">不贊同</button>
+            <button class="reset" onclick="resetVotes('4')">重新投票</button>
+        </div>
+
+        <div id="group5" class="group-section">
+            <h2>第5組</h2>
+            <button class="agree" onclick="vote('5', 'agree')">贊同</button>
+            <button class="disagree" onclick="vote('5', 'disagree')">不贊同</button>
+            <button class="reset" onclick="resetVotes('5')">重新投票</button>
+        </div>
+
+        <div id="group6" class="group-section">
+            <h2>第6組</h2>
+            <button class="agree" onclick="vote('6', 'agree')">贊同</button>
+            <button class="disagree" onclick="vote('6', 'disagree')">不贊同</button>
+            <button class="reset" onclick="resetVotes('6')">重新投票</button>
+        </div>
+
+        <div class="result" id="voteResult"></div>
+        <div class="result score-message" id="scoreResult"></div>
+    </div>
+    
+    <script>
+        // 用於存儲每個組別的票數
+        const voteData = {
+            1: { agree: 0, disagree: 0 },
+            2: { agree: 0, disagree: 0 },
+            3: { agree: 0, disagree: 0 },
+            4: { agree: 0, disagree: 0 },
+            5: { agree: 0, disagree: 0 },
+            6: { agree: 0, disagree: 0 }
+        };
+
+        function updateGroup() {
+            // 隱藏所有組別區域
+            document.querySelectorAll('.group-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // 獲取選擇的組別
+            const selectedGroup = document.getElementById('groupSelect').value;
+
+            // 顯示選擇的組別區域
+            document.getElementById('group' + selectedGroup).classList.add('active');
+
+            // 更新結果顯示
+            updateResults(selectedGroup);
+        }
+
+        function vote(group, type) {
+            if (type === 'agree') {
+                voteData[group].agree++;
+            } else if (type === 'disagree') {
+                voteData[group].disagree++;
+            }
+            updateResults(group);
+        }
+
+        function resetVotes(group) {
+            voteData[group].agree = 0;
+            voteData[group].disagree = 0;
+            updateResults(group);
+            document.getElementById('scoreResult').innerText = "投票已重置！";
+        }
+
+        function updateResults(group) {
+            const agreeCount = voteData[group].agree;
+            const disagreeCount = voteData[group].disagree;
+
+            document.getElementById('voteResult').innerText = `第${group}組 - 贊同：${agreeCount} 票, 不贊同：${disagreeCount} 票`;
+
+            let scoreMessage = '';
+            
+            if (agreeCount === 0 && disagreeCount === 0) {
+                scoreMessage = "尚未投票";
+            } else if (agreeCount === disagreeCount) {
+                scoreMessage = "有人還沒投票喔!";
+            } else if (agreeCount >= 5) {
+                scoreMessage = "弘哥前進5格，其他玩家不動";
+            } else if (agreeCount > disagreeCount && agreeCount < (disagreeCount + 5)) {
+                scoreMessage = "弘哥前進3格，不贊同者後退1格，贊同者不動";
+            } else if (disagreeCount > agreeCount && disagreeCount < (agreeCount + 5)) {
+                scoreMessage = "弘哥、不贊同者不動，贊同者後退1格";
+            } else if (agreeCount === 0) {
+                scoreMessage = "弘哥不動，其他玩家也不動";
+            } else {
+                scoreMessage = "尚未計算評分";
+            }
+            
+            document.getElementById('scoreResult').innerText = scoreMessage;
+        }
+
+        // 初始化，顯示第1組
+        document.addEventListener('DOMContentLoaded', () => {
+            updateGroup();
+        });
+    </script>
+</body>
+</html>
